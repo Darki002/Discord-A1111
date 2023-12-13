@@ -71,4 +71,4 @@ function loadImage(response) {
     }
 }
 
-app.listen(3000, () => console.log('Server ready on localhost:3000'));
+app.listen(3000, () => console.log('Server ready on http://localhost:3000'));
