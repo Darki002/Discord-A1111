@@ -1,7 +1,7 @@
 const axios = require('axios');
 const url = 'http://127.0.0.1:7860';
 
-model.exports.getModels = async () => {
+module.exports.getModels = async () => {
     return new Promise(async (resolve, reject) => {
         try {
             const respons = await axios.get(url + '/sdapi/v1/sd-models');
@@ -14,7 +14,7 @@ model.exports.getModels = async () => {
     });
 };
 
-models.exports.createPayload = (sd_model_checkpoint) => {
+module.exports.createPayload = (sd_model_checkpoint) => {
     const payload = ({
         prompt: "beatiful women with black hair and blue eyes",
         steps: 25,
@@ -33,7 +33,7 @@ models.exports.createPayload = (sd_model_checkpoint) => {
     return payload;
 }
 
-models.exports.startImageGeneration = async (payload) => {
+module.exports.startImageGeneration = async (payload) => {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await axios.post(url + '/sdapi/v1/txt2img', payload);
