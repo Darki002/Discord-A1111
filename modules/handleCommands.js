@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageSelectMenu } = require('discord.js');
+const { ActionRowBuilder, MessageSelectMenu } = require('discord.js');
 const { getModels, createPayload, startImageGeneration } = require('./dream.js');
 
 module.exports.handleDreamCommand = async (interaction, currentModel) => {
@@ -41,7 +41,7 @@ async function getModelActionRow() {
     const models = await getModels();
     const modelsMap = models.map(model => model.title)
 
-    return new MessageActionRow()
+    return new ActionRowBuilder()
         .addComponents(
             new MessageSelectMenu()
                 .setCustomId('dreamstype')

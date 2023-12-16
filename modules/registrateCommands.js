@@ -3,12 +3,12 @@ const { Routes } = require('discord-api-types/v9');
 
 const commands = [
     {
-        name: 'abilities',
-        description: 'Lists all Commands'
-    },
-    {
         name: 'ping',
         description: 'Replies with Pong!'
+    },
+    {
+        name: 'abilities',
+        description: 'Lists all Commands'
     },
     {
         name: 'dreamstype',
@@ -38,5 +38,5 @@ exports.registrateCommands = async (client) => {
 }
 
 exports.getCommands = () => {
-    return commands;
+    return commands.filter(command => command.name !== 'ping');
 };
