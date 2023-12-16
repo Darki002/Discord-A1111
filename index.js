@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
-const { handleDreamCommand, handleDreamTypesCommand } = require('./modules/handleCommands');
+const { handleDreamCommand, handleDreamTypesCommand, setCurrentModel, getCurrentModel } = require('./modules/handleCommands');
 const { registrateCommands, getCommands } = require('./modules/registrateCommands');
 
 const client = new Client({
@@ -11,10 +11,7 @@ const client = new Client({
     ]
 });
 
-const currentModel = undefined;
-
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return;
 
     if(interaction.commandName === 'ping') {
         await interaction.reply('Pong!');
@@ -29,17 +26,29 @@ client.on('interactionCreate', async interaction => {
         return;
     }
 
-    if (interaction.commandName === 'dreamstype') {
-        await handleDreamTypesCommand(interaction);
-    }
-    else if (interaction.isStringSelectMenu()) {
-        if (interaction.customId === 'dreamstype') {
-            currentModel = interaction.values[0];
-            await interaction.reply(`Selected dream: ${currentModel}`)
+    if (interaction.commandName === 'dreamtype') {
+        const command = interaction.options.getSubcommand();
+        if(command === 'set') {  
+            await handleDreamTypesCommand(interaction);
+        }
+        else if(command === 'get') {
+            const currentModel = getCurrentModel();
+            if(currentModel === undefined) {
+                await interaction.reply('No model selected!');
+                return;
+            }
+            await interaction.reply(`Current model: ${currentModel}`);
+            return;
         }
     }
+    else if (interaction.isStringSelectMenu()) {
+        await setCurrentModel(interaction);
+    }
     else if (interaction.commandName === 'dream') {
-        await handleDreamCommand(interaction, currentModel);
+        await handleDreamCommand(interaction);
+    }
+    else if(interaction.commandName === 'dreamtype') {
+        await handleDreamTypesCommand(interaction);
     }
 });
 

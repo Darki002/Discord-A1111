@@ -14,9 +14,9 @@ module.exports.getModels = async () => {
     });
 };
 
-module.exports.createPayload = (sd_model_checkpoint) => {
+module.exports.createPayload = (sd_model_checkpoint, prompt) => {
     const payload = ({
-        prompt: "beatiful women with black hair and blue eyes",
+        prompt: prompt,
         steps: 25,
         batch_size: 1,
         width: 512,
@@ -49,7 +49,8 @@ module.exports.startImageGeneration = async (payload) => {
 function loadImage(response) {
     try {
         const base64Image = response['images'][0].split(';base64,').pop();
-        return base64Image;
+        const imageBuffer = Buffer.from(base64Image, 'base64');
+        return imageBuffer;
     } catch (err) {
         console.log(err);
         return null;
