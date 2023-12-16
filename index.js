@@ -24,7 +24,7 @@ client.on('interactionCreate', async interaction => {
     if(interaction.commandName === 'abilities') {
         const commands = getCommands();
         await interaction.reply(`Commands: \n ${commands.map(command => {
-            return `${command.name} - ${command.description}`
+            return `${command.name} - ${command.description} \n`
         } )}`)
         return;
     }
