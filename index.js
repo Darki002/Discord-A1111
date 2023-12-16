@@ -1,7 +1,8 @@
 require('dotenv').config();
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { setCurrentModel } = require('./modules/SelectetModel');
 const { registrateCommands } = require('./modules/registrateCommands');
+const {getCommandExecutions} = require('./comments');
 
 const client = new Client({
     intents: [
@@ -11,10 +12,26 @@ const client = new Client({
     ]
 });
 
+(async () => {
+    client.commands = await getCommandExecutions();
+})();
+
+client.on('ready', async () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+    try {
+        const commands = await registrateCommands(client);
+        console.log('Bot is ready!');
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+
 client.on('interactionCreate', async interaction => {
     if (interaction.isCommand()) {
         const command = client.commands.get(interaction.commandName);
         if (!command) return;
+
         try {
             await command.execute(interaction);
         }
@@ -38,17 +55,6 @@ client.on('interactionCreate', async interaction => {
             const modelName = model.split(/[ .]+/)[0];
             await interaction.reply(`Selected dream: ${modelName}`);
         }
-    }
-});
-
-client.on('ready', async () => {
-    console.log(`Logged in as ${client.user.tag}!`);
-    try {
-        await registrateCommands(client);
-        console.log('Bot is ready!');
-    }
-    catch (error) {
-        console.error(error);
     }
 });
 
