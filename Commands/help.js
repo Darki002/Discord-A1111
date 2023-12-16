@@ -21,7 +21,7 @@ module.exports = {
         }
 
         commands.forEach(command => {
-            reply += `\n - **${command.name}**: ${command.description}`;
+            reply += `\n - \`${command.name}\`: ${command.description}`;
         });
 
         await interaction.reply(reply);

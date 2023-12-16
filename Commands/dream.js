@@ -29,7 +29,7 @@ module.exports = {
         await interaction.editReply('Darki is dreaming...');
 
         try {
-            const payload = createPayload(model, prompt);
+            const payload = createPayload(currentModel, prompt);
             const imgBuffer = await startImageGeneration(payload);
 
             const imagheAttachment = new AttachmentBuilder(imgBuffer, { name: 'dream.png'});
