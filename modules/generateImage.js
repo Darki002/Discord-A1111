@@ -49,8 +49,7 @@ module.exports.startImageGeneration = async (payload) => {
 function loadImage(response) {
     try {
         const base64Image = response['images'][0].split(';base64,').pop();
-        const imageBuffer = Buffer.from(base64Image, 'base64');
-        return imageBuffer;
+        return Buffer.from(base64Image, 'base64');
     } catch (err) {
         console.log(err);
         return null;

@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
-const { handleDreamCommand, handleDreamTypesCommand, setCurrentModel, getCurrentModel } = require('./modules/handleCommands');
-const { registrateCommands, getCommands } = require('./modules/registrateCommands');
+const { setCurrentModel } = require('./modules/SelectetModel');
+const { registrateCommands } = require('./modules/registrateCommands');
 
 const client = new Client({
     intents: [
@@ -12,43 +12,32 @@ const client = new Client({
 });
 
 client.on('interactionCreate', async interaction => {
-
-    if(interaction.commandName === 'ping') {
-        await interaction.reply('Pong!');
-        return;
-    }
-
-    if(interaction.commandName === 'abilities') {
-        const commands = getCommands();
-        await interaction.reply(`### Commands: \n ${commands.map(command => {
-            return `- \`${command.name}\`: ${command.description} \n`
-        }).join('')}`)
-        return;
-    }
-
-    if (interaction.commandName === 'dreamtype') {
-        const command = interaction.options.getSubcommand();
-        if(command === 'set') {  
-            await handleDreamTypesCommand(interaction);
+    if (interaction.isCommand()) {
+        const command = client.commands.get(interaction.commandName);
+        if (!command) return;
+        try {
+            await command.execute(interaction);
         }
-        else if(command === 'get') {
-            const currentModel = getCurrentModel();
-            if(currentModel === undefined) {
-                await interaction.reply('No model selected!');
+        catch (error) {
+            console.error(error);
+            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+        }
+        return;
+    }
+    if (interaction.isStringSelectMenu()) {
+        if(interaction.customId === 'dreamstype'){
+            const model = interaction.values[0];
+            try{
+                await setCurrentModel(model);
+            }
+            catch {
+                await interaction.reply('There was an error while selecting this dream!');
                 return;
             }
-            await interaction.reply(`Current model: ${currentModel}`);
-            return;
+
+            const modelName = model.split(/[ .]+/)[0];
+            await interaction.reply(`Selected dream: ${modelName}`);
         }
-    }
-    else if (interaction.isStringSelectMenu()) {
-        await setCurrentModel(interaction);
-    }
-    else if (interaction.commandName === 'dream') {
-        await handleDreamCommand(interaction);
-    }
-    else if(interaction.commandName === 'dreamtype') {
-        await handleDreamTypesCommand(interaction);
     }
 });
 
@@ -56,7 +45,6 @@ client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     try {
         await registrateCommands(client);
-        console.log('Commands registered!');
         console.log('Bot is ready!');
     }
     catch (error) {
