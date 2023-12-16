@@ -14,10 +14,11 @@ module.exports.getModels = async () => {
     });
 };
 
-module.exports.createPayload = (sd_model_checkpoint, prompt) => {
+module.exports.createPayload = (sd_model_checkpoint, prompt, negatives) => {
     const payload = ({
         prompt: prompt,
-        steps: 25,
+        negative_prompt: negatives,
+        steps: 20,
         batch_size: 1,
         width: 512,
         height: 512,

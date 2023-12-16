@@ -1,15 +1,19 @@
-const {SlashCommandBuilder, AttachmentBuilder} = require('discord.js');
+const { SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
 const { createPayload, startImageGeneration } = require('../modules/generateImage');
 const { getCurrentModel } = require('../modules/SelectetModel');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('dream')
-    .setDescription('Generates an Image from the selected Model')
-    .addStringOption(option =>
-        option.setName('prompt')
-            .setDescription('The Prompt for the Image')
-            .setRequired(true)),
+        .setName('dream')
+        .setDescription('Generates an Image from the selected Model')
+        .addStringOption(option =>
+            option.setName('prompt')
+                .setDescription('The Prompt for the Image')
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName('negatives')
+                .setDescription('The negative Prompt for the Image')
+                .setRequired(false)),
 
     async execute(interaction) {
         await interaction.deferReply();
@@ -21,6 +25,8 @@ module.exports = {
         }
 
         const prompt = interaction.options.getString('prompt');
+        const negatives = interaction.options.getString('negatives');
+
         if (prompt === null) {
             await interaction.editReply('You need to specify a prompt!');
             return;
@@ -29,11 +35,11 @@ module.exports = {
         await interaction.editReply('Darki is dreaming...');
 
         try {
-            const payload = createPayload(currentModel, prompt);
+            const payload = createPayload(currentModel, prompt, negatives);
             const imgBuffer = await startImageGeneration(payload);
 
-            const imagheAttachment = new AttachmentBuilder(imgBuffer, { name: 'dream.png'});
-            await interaction.editReply({ content: 'Darki has dreamed:', files: [imagheAttachment] });
+            const imagheAttachment = new AttachmentBuilder(imgBuffer, { name: 'dream.png' });
+            await interaction.editReply({ content: 'Darki has had a dream:', files: [imagheAttachment] });
         }
         catch (err) {
             console.log(err);

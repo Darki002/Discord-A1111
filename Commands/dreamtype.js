@@ -1,31 +1,27 @@
-const {SlashCommandBuilder} = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { getModels } = require('../modules/generateImage');
 const { getCurrentModel, setCurrentModel } = require('../modules/SelectetModel');
 
 const slashCommand = new SlashCommandBuilder()
-.setName('dreamtype')
-.setDescription('Select a SD Model for the Bot, that will be used to generate an Image')
-.addSubcommand(subcommand =>
-    subcommand
-        .setName('set')
-        .setDescription('Set the model')
-        .addStringOption(option =>
-            option.setName('model')
-                .setDescription('The model to set')
-                .setRequired(false))
-)
-.addSubcommand(subcommand =>
-    subcommand
-        .setName('get')
-        .setDescription('Get the current model'))
-.addSubcommand(subcommand =>
-    subcommand
-        .setName('list')
-        .setDescription('List all available models'))
-.addSubcommand(subcommand =>
-    subcommand
-        .setName('help')
-        .setDescription('Get help for this command'))
+    .setName('dreamtype')
+    .setDescription('Select a SD Model for the Bot, that will be used to generate an Image')
+    .addSubcommand(subcommand =>
+        subcommand
+            .setName('set')
+            .setDescription('Set the model')
+            .addStringOption(option =>
+                option.setName('model')
+                    .setDescription('The model to set')
+                    .setRequired(false))
+    )
+    .addSubcommand(subcommand =>
+        subcommand
+            .setName('get')
+            .setDescription('Get the current model'))
+    .addSubcommand(subcommand =>
+        subcommand
+            .setName('list')
+            .setDescription('List all available models'))
 
 module.exports = {
     data: slashCommand,
@@ -36,7 +32,7 @@ module.exports = {
             switch (interaction.options.getSubcommand()) {
                 case 'set':
                     const model = interaction.options.getString('model');
-                    if(model){
+                    if (model) {
                         await dreamTypeSet(interaction);
                     }
                     else {
@@ -49,9 +45,6 @@ module.exports = {
                 case 'list':
                     await dreamTypeList(interaction);
                     break;
-                case 'help':
-                    await help(interaction);
-                    break;
                 default:
                     await interaction.editReply('Darki is having a nightmare!');
                     break;
@@ -62,19 +55,6 @@ module.exports = {
             await interaction.editReply('Darki is having a nightmare!');
         }
     }
-}
-
-async function help(interaction) {
-    await interaction.editReply('Help is coming soon!');
-
-    const subcommands = slashCommand.toJSON().options;
-    let reply = '### Here are all the available commands:';
-
-    subcommands.forEach(subcommand => {
-        reply += `\n - \`${slashCommand.name} ${subcommand.name}\`: ${subcommand.description}`;
-    });
-
-    await interaction.editReply(reply);
 }
 
 async function dreamTypeList(interaction) {
