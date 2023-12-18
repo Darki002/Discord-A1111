@@ -18,7 +18,7 @@ module.exports.getSamplers = async () => {
     return new Promise(async (resolve, reject) => {
         try {
             const respons = await axios.get(url + '/sdapi/v1/samplers');
-            const samplers = respons.data.map(sampler => sampler.title)
+            const samplers = respons.data.map(sampler => sampler.name)
             resolve(samplers);
         } catch (err) {
             console.log(err);
@@ -34,7 +34,6 @@ module.exports.startImageGeneration = async (payload) => {
             const img = loadImage(response.data);
             resolve(img);
         } catch (err) {
-            console.log(err);
             reject(err);
         }
     });
@@ -45,7 +44,6 @@ function loadImage(response) {
         const base64Image = response['images'][0].split(';base64,').pop();
         return Buffer.from(base64Image, 'base64');
     } catch (err) {
-        console.log(err);
         return null;
     }
 }
@@ -53,21 +51,28 @@ function loadImage(response) {
 module.exports.createPayload = (
     sd_model_checkpoint, sampler, prompt, negatives, width, height, steps, cfg_scale, clipSkip, seed
 ) => {
+    const parsedWidth = parseInt(width);
+    const parsedHeight = parseInt(height);
+    const parsedSteps = parseInt(steps);
+    const parsedCfgScale = parseInt(cfg_scale);
+    const parsedClipSkip = parseInt(clipSkip);
+    const parsedSeed = parseInt(seed);
+
     const payload = ({
-        prompt: prompt,
-        negative_prompt: negatives,
-        steps: steps ?? 20,
+        prompt: prompt.toString(),
+        negative_prompt: negatives.toString(),
+        steps: isNaN(parsedSteps) ? 20 : parsedSteps,
         batch_size: 1,
-        width: width ?? 512,
-        height: height ?? 512,
-        sampler_index: sampler ?? "Euler",
-        cfg_scale: cfg_scale ?? 7,
-        seed: seed ?? -1
+        width: isNaN(parsedWidth) ? 512 : parsedWidth,
+        height: isNaN(parsedHeight) ? 512 : parsedHeight,
+        sampler_index: sampler ? sampler.toString() : 'Eular',
+        cfg_scale: isNaN(parsedCfgScale) ? 7 : parsedCfgScale,
+        seed: isNaN(parsedSeed) ? -1 : parsedSeed
     })
 
     const override_settings = {
-        "sd_model_checkpoint": sd_model_checkpoint,
-        "CLIP_stop_at_last_layers": clipSkip ?? 1
+        sd_model_checkpoint: sd_model_checkpoint.toString(),
+        CLIP_stop_at_last_layers: isNaN(parsedClipSkip) ? 1 : parsedClipSkip
     }
     payload['override_settings'] = override_settings
 

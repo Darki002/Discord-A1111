@@ -100,18 +100,21 @@ async function dreamSamplerSet(interaction) {
 async function dreamSamplerAction(interaction) {
     await interaction.editReply('Dreams are coming soon!');
 
-    const samplers = await getModels();
+    const samplers = await getSamplers();
     const row = getSamplerActionRow(samplers);
     await interaction.editReply({ content: 'What dream sampler do you want?!', components: [row] });
 }
 
 function getSamplerActionRow(sampler) {
-    const samplersMap = sampler.map(sampler => {
-        return {
-            label: sampler,
-            value: sampler
-        }
-    })
+
+    const samplersMap = sampler
+        .filter(s => s.includes('DPM') || s.includes('Euler'))
+        .map(sampler => {
+            return {
+                label: sampler,
+                value: sampler
+            }
+        })
 
     return new ActionRowBuilder()
         .addComponents(

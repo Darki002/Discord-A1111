@@ -1,7 +1,1 @@
-[
-    {
-        "UserId": 433600488122875905,
-        "Model": "dreamshaper_8",
-        "Sampler": "Euler"
-    }
-]
+[{"UserId":"433600488122875905","Model":"epicrealism_naturalSinRC1VAE.safetensors [84d76a0328]","Sampler":"DPM++ SDE Karras"},{"UserId":"791429235826753548","Model":"albedobaseXL_v13.safetensors [a40d817f46]","Sampler":null}]

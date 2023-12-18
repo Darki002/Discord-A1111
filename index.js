@@ -48,7 +48,7 @@ client.on('interactionCreate', async interaction => {
             case 'dreams-model':
                 await dreamsModel(interaction);
                 break;
-            case 'dreams-sampler':
+            case 'dream-sampler':
                 await dreamSamplerAction(interaction);
                 break;
             case 'continue-to-models':

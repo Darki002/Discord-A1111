@@ -70,11 +70,21 @@ async function dreamTypeList(interaction) {
 }
 
 async function dreamTypeGetCurrent(interaction) {
-    await interaction.editReply('Dream are coming soon!');
+    await interaction.editReply('Dream is coming soon!');
 
-    const currentModel = await getCurrentModelForUser(interaction.user);
-    await interaction.editReply(`Your model is currently the \"${currentModel}\" model`);
-
+    try {
+        const currentModel = await getCurrentModelForUser(interaction.user);
+        if (currentModel === undefined) {
+            await interaction.editReply('You have no model selected!');
+        }
+        else {
+            await interaction.editReply(`Your model is currently the \"${getModelName(currentModel)}\" model`);
+        }
+    }
+    catch (err) {
+        console.log(err);
+        await interaction.editReply('Darki is having a nightmare!');
+    }
 }
 
 async function dreamModelSet(interaction) {

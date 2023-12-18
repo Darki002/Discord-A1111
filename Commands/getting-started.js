@@ -13,7 +13,7 @@ module.exports = {
         const continiueButton = new ButtonBuilder()
             .setCustomId('continue-to-models')
             .setLabel('Continue')
-            .setStyle('SUCCESS');
+            .setStyle('Primary');
 
         const row = new ActionRowBuilder().addComponents(continiueButton);
 

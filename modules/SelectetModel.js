@@ -1,27 +1,56 @@
 const fs = require('fs');
+const path = require('path');
+
+const file = './db/UserSettings.json';
+function getFilePath() {
+    return path.join(__dirname, file);
+}
 
 module.exports.getCurrentSamplerForUser = async (user) => {
-    const setiings = await getUserSettings(user);
-    return setiings.Sampler;
+    try {
+        const setiings = await getUserSettings(user);
+        if (setiings == null) return undefined;
+        return setiings.Sampler;
+    }
+    catch (err) {
+        throw err;
+    }
 };
 
 module.exports.setCurrentSamplerForUser = async (sampler, user) => {
-    await setUserSettings(user, null, sampler);
+    try {
+        await setUserSettings(user, null, sampler);
+    }
+    catch (err) {
+        throw err;
+    }
 }
 
 module.exports.getCurrentModelForUser = async (user) => {
-    const setiings = await getUserSettings(user);
-    return setiings.Model;
+    try {
+        const setiings = await getUserSettings(user);
+        if (setiings == null) return undefined;
+        return setiings.Model;
+    }
+    catch (err) {
+        throw err;
+    }
 };
 
 module.exports.setCurrentModelForUser = async (model, user) => {
-    await setUserSettings(user, model, null);
+    try {
+        await setUserSettings(user, model, null);
+    }
+    catch (err) {
+        throw err;
+    }
 }
 
 async function getUserSettings(user) {
     return new Promise((resolve, reject) => {
-        fs.readFile('./UserSettings.json', (err, data) => {
+        fs.readFile(getFilePath(), (err, data) => {
             if (err) reject(err);
+            if (!data) resolve(null);
             const userSettings = JSON.parse(data);
             const result = userSettings.find(entry => entry.UserId === user.id);
             resolve(result);
@@ -31,7 +60,10 @@ async function getUserSettings(user) {
 
 async function setUserSettings(user, model, sampler) {
     return new Promise((resolve, reject) => {
-        fs.readFile('./UserSettings.json', (err, data) => {
+
+        const filePath = getFilePath();
+
+        fs.readFile(filePath, (err, data) => {
             if (err) reject(err);
             const userSettings = JSON.parse(data);
             const existingSettings = userSettings.find(entry => entry.UserId === user.id);
@@ -41,7 +73,7 @@ async function setUserSettings(user, model, sampler) {
             } else {
                 userSettings.push({ UserId: user.id, Model: model, Sampler: sampler });
             }
-            fs.writeFile('./UserSettings.json', JSON.stringify(userSettings), (err) => {
+            fs.writeFile(filePath, JSON.stringify(userSettings), (err) => {
                 if (err) reject(err);
                 resolve();
             });

@@ -25,7 +25,7 @@ module.exports = {
                 .setDescription('Height of the Image. Default: 512 (min 64)')
                 .setRequired(false))
         .addNumberOption(option =>
-            option.setName('cfg scale')
+            option.setName('cfg_scale')
                 .setDescription('cfg scale. Default: 7 (1 - 10)')
                 .setRequired(false))
         .addNumberOption(option =>
@@ -33,7 +33,7 @@ module.exports = {
                 .setDescription('Steps. Default: 20 (1 - 50)')
                 .setRequired(false))
         .addNumberOption(option =>
-            option.setName('CLIP skip')
+            option.setName('clip_skip')
                 .setDescription('CLIP Skip. Default: 1 (1 - 10)')
                 .setRequired(false))
         .addNumberOption(option =>
@@ -57,15 +57,15 @@ module.exports = {
             await interaction.editReply('You need to select a dream first!');
             return;
         }
-        const sampler = await getCurrentSampler();
+        const sampler = await getCurrentSampler(interaction.user);
 
         const prompt = interaction.options.getString('prompt');
         const negatives = interaction.options.getString('negatives');
         const width = interaction.options.getNumber('width');
         const height = interaction.options.getNumber('height');
-        const cfgScale = interaction.options.getNumber('cfg scale');
+        const cfgScale = interaction.options.getNumber('cfg_scale');
         const steps = interaction.options.getNumber('steps');
-        const clipSkip = interaction.options.getNumber('CLIP skip');
+        const clipSkip = interaction.options.getNumber('clip_skip');
         const seed = interaction.options.getNumber('seed');
 
         const userInputCheck = await checkUserInputs(interaction, prompt, width, height, cfgScale, steps, clipSkip);
@@ -85,7 +85,6 @@ module.exports = {
             await interaction.editReply({ content: 'Darki has had a dream:', files: [imagheAttachment] });
         }
         catch (err) {
-            console.log(err);
             await interaction.editReply('Darki is having a nightmare!');
         }
 
