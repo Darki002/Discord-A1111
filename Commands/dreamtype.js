@@ -12,8 +12,7 @@ const slashCommand = new SlashCommandBuilder()
             .addStringOption(option =>
                 option.setName('model')
                     .setDescription('The model to set')
-                    .setRequired(false))
-    )
+                    .setRequired(false)))
     .addSubcommand(subcommand =>
         subcommand
             .setName('get')
@@ -64,7 +63,7 @@ async function dreamTypeList(interaction) {
     let reply = '### Dream Types:';
 
     models.forEach(model => {
-        reply += `\n - ${model.split(/[ .]+/)[0]}`;
+        reply += `\n - ${getModelName(model)}`;
     });
 
     await interaction.editReply(reply);
@@ -88,7 +87,7 @@ async function dreamTypeSet(interaction) {
     }
 
     const models = await getModels();
-    const foundModel = models.filter(m => m.split(/[ .]+/)[0] === model)[0];
+    const foundModel = models.filter(m => getModelName(m) === model)[0];
 
     if (!foundModel) {
         await interaction.editReply('This model does not exist!');
@@ -103,14 +102,14 @@ async function dreamTypeAction(interaction) {
     await interaction.editReply('Dreams are coming soon!');
 
     const models = await getModels();
-    const row = getModelActionRow(models)
+    const row = getModelActionRow(models);
     await interaction.editReply({ content: 'What dream type do you want?!', components: [row] });
 }
 
 function getModelActionRow(models) {
     const modelsMap = models.map(model => {
         return {
-            label: model.split(/[ .]+/)[0],
+            label: getModelName(model),
             value: model
         }
     })
@@ -122,4 +121,8 @@ function getModelActionRow(models) {
                 .setPlaceholder('Select a dream type')
                 .addOptions(modelsMap)
         );
+}
+
+function getModelName(model) {
+    return model.split(/[ .]+/)[0];
 }

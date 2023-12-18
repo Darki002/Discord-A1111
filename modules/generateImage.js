@@ -14,16 +14,16 @@ module.exports.getModels = async () => {
     });
 };
 
-module.exports.createPayload = (sd_model_checkpoint, prompt, negatives) => {
+module.exports.createPayload = (sd_model_checkpoint, prompt, negatives, width, height, steps, cfg_scale) => {
     const payload = ({
         prompt: prompt,
         negative_prompt: negatives,
-        steps: 20,
+        steps: steps ?? 20,
         batch_size: 1,
-        width: 512,
-        height: 512,
+        width: width ?? 512,
+        height: height ?? 512,
         sampler_index: "Euler",
-        cfg_scale: 7
+        cfg_scale: cfg_scale ?? 7,
     })
 
     const override_settings = {
