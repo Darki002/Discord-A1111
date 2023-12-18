@@ -1,9 +1,9 @@
 const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { getModels } = require('../modules/generateImage');
-const { getCurrentModel, setCurrentModel } = require('../modules/SelectetModel');
+const { getCurrentModelForUser, setCurrentModelForUser } = require('../modules/SelectetModel');
 
 const slashCommand = new SlashCommandBuilder()
-    .setName('dreamtype')
+    .setName('dream-model')
     .setDescription('Select a SD Model for the Bot, that will be used to generate an Image')
     .addSubcommand(subcommand =>
         subcommand
@@ -12,8 +12,7 @@ const slashCommand = new SlashCommandBuilder()
             .addStringOption(option =>
                 option.setName('model')
                     .setDescription('The model to set')
-                    .setRequired(false))
-    )
+                    .setRequired(false)))
     .addSubcommand(subcommand =>
         subcommand
             .setName('get')
@@ -21,7 +20,7 @@ const slashCommand = new SlashCommandBuilder()
     .addSubcommand(subcommand =>
         subcommand
             .setName('list')
-            .setDescription('List all available models'))
+            .setDescription('List all available models'));
 
 module.exports = {
     data: slashCommand,
@@ -33,10 +32,10 @@ module.exports = {
                 case 'set':
                     const model = interaction.options.getString('model');
                     if (model) {
-                        await dreamTypeSet(interaction);
+                        await dreamModelSet(interaction);
                     }
                     else {
-                        await dreamTypeAction(interaction);
+                        await dreamModelAction(interaction);
                     }
                     break;
                 case 'get':
@@ -61,10 +60,10 @@ async function dreamTypeList(interaction) {
     await interaction.editReply('Dreams are coming soon!');
 
     const models = await getModels();
-    let reply = '### Dream Types:';
+    let reply = '### Dream Models:';
 
     models.forEach(model => {
-        reply += `\n - ${model.split(/[ .]+/)[0]}`;
+        reply += `\n - ${getModelName(model)}`;
     });
 
     await interaction.editReply(reply);
@@ -73,12 +72,12 @@ async function dreamTypeList(interaction) {
 async function dreamTypeGetCurrent(interaction) {
     await interaction.editReply('Dream are coming soon!');
 
-    const currentModel = await getCurrentModel();
-    await interaction.editReply(`The current model is: ${currentModel}`);
+    const currentModel = await getCurrentModelForUser(interaction.user);
+    await interaction.editReply(`Your model is currently the \"${currentModel}\" model`);
 
 }
 
-async function dreamTypeSet(interaction) {
+async function dreamModelSet(interaction) {
     await interaction.editReply('Dream is setting!');
 
     const model = interaction.options.getString('model');
@@ -88,29 +87,29 @@ async function dreamTypeSet(interaction) {
     }
 
     const models = await getModels();
-    const foundModel = models.filter(m => m.split(/[ .]+/)[0] === model)[0];
+    const foundModel = models.find(m => getModelName(m) === model);
 
     if (!foundModel) {
         await interaction.editReply('This model does not exist!');
         return;
     }
 
-    await setCurrentModel(model);
-    await interaction.editReply(`The current model is: ${model}`);
+    await setCurrentModelForUser(foundModel, interaction.user);
+    await interaction.editReply(`Your model has changed to \n${model}\"`);
 }
 
-async function dreamTypeAction(interaction) {
+async function dreamModelAction(interaction) {
     await interaction.editReply('Dreams are coming soon!');
 
     const models = await getModels();
-    const row = getModelActionRow(models)
-    await interaction.editReply({ content: 'What dream type do you want?!', components: [row] });
+    const row = getModelActionRow(models);
+    await interaction.editReply({ content: 'What dream model do you want?!', components: [row] });
 }
 
 function getModelActionRow(models) {
     const modelsMap = models.map(model => {
         return {
-            label: model,
+            label: getModelName(model),
             value: model
         }
     })
@@ -118,8 +117,12 @@ function getModelActionRow(models) {
     return new ActionRowBuilder()
         .addComponents(
             new StringSelectMenuBuilder()
-                .setCustomId('dreamstype')
-                .setPlaceholder('Select a dream type')
+                .setCustomId('dreams-model')
+                .setPlaceholder('Select a dream model')
                 .addOptions(modelsMap)
         );
+}
+
+function getModelName(model) {
+    return model.split(/[ .]+/)[0];
 }

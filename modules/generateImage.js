@@ -12,26 +12,19 @@ module.exports.getModels = async () => {
             reject(err);
         }
     });
-};
+}
 
-module.exports.createPayload = (sd_model_checkpoint, prompt, negatives) => {
-    const payload = ({
-        prompt: prompt,
-        negative_prompt: negatives,
-        steps: 20,
-        batch_size: 1,
-        width: 512,
-        height: 512,
-        sampler_index: "Euler",
-        cfg_scale: 7
-    })
-
-    const override_settings = {
-        "sd_model_checkpoint": sd_model_checkpoint
-    }
-    payload['override_settings'] = override_settings
-
-    return payload;
+module.exports.getSamplers = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const respons = await axios.get(url + '/sdapi/v1/samplers');
+            const samplers = respons.data.map(sampler => sampler.title)
+            resolve(samplers);
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
+    });
 }
 
 module.exports.startImageGeneration = async (payload) => {
@@ -55,4 +48,28 @@ function loadImage(response) {
         console.log(err);
         return null;
     }
+}
+
+module.exports.createPayload = (
+    sd_model_checkpoint, sampler, prompt, negatives, width, height, steps, cfg_scale, clipSkip, seed
+) => {
+    const payload = ({
+        prompt: prompt,
+        negative_prompt: negatives,
+        steps: steps ?? 20,
+        batch_size: 1,
+        width: width ?? 512,
+        height: height ?? 512,
+        sampler_index: sampler ?? "Euler",
+        cfg_scale: cfg_scale ?? 7,
+        seed: seed ?? -1
+    })
+
+    const override_settings = {
+        "sd_model_checkpoint": sd_model_checkpoint,
+        "CLIP_stop_at_last_layers": clipSkip ?? 1
+    }
+    payload['override_settings'] = override_settings
+
+    return payload;
 }
