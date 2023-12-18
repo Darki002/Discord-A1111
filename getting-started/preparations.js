@@ -1,6 +1,41 @@
 const { ActionRowBuilder, ButtonBuilder } = require('discord.js');
 
-module.exports = async (interaction) => {
+module.exports.models = async (interaction) => {
+    const messgae = '## Models \n'
+    messgae += 'To generate a Image you need to select a Model. You can do this by using the \`/dream-model\` commands. \n';
+    messgae += 'It will show you a dropdown with all available models. \n';
+    messgae += 'Choose one and you are ready to continiue! \n';
+
+    const continiueButton = new ButtonBuilder()
+        .setCustomId('continue-to-sampler')
+        .setLabel('Continue')
+        .setStyle('SUCCESS');
+
+    const row = new ActionRowBuilder().addComponents(continiueButton);
+
+    await interaction.reply({ content: messgae, components: [row] });
+}
+
+module.exports.sampler = async (interaction) => {
+    const messgae = '## Sampler \n'
+    messgae += 'You can skip this step and use the default sampler. In that case you can press continiue. \n'
+    messgae += 'However, keep in mind that you can improve the Image quality with the right sampler. \n'
+    messgae += 'If you want to find the best sampler for your Model go to https://civitai.com and look up your model. \n'
+    messgae += 'You can do choose a sampler by using the \`/dream-sampler\` commands. ';
+    messgae += 'It will show you a dropdown again, with all available samplers. \n';
+    messgae += 'Choose one and your preparations are finished :P \n';
+
+    const continiueButton = new ButtonBuilder()
+        .setCustomId('continue-to-first-prompt')
+        .setLabel('Continue')
+        .setStyle('SUCCESS');
+
+    const row = new ActionRowBuilder().addComponents(continiueButton);
+
+    await interaction.reply({ content: messgae, components: [row] });
+}
+
+module.exports.firstPrompt = async (interaction) => {
     const messgae = '## First Prompt \n'
     messgae += 'To generate an Image you can use the \`/dream\`. The option prompt will be required. \n'
     messgae += 'However there are a bunch of other options and they are all optional. But they can help you to get uch better results if you use them.\n'

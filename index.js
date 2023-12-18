@@ -3,6 +3,8 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { setCurrentModelForUser: setCurrentModel, setCurrentSamplerForUser: setCurrentSampler } = require('./modules/SelectetModel');
 const { registrateCommands } = require('./modules/registrateCommands');
 const { getCommandExecutions } = require('./comments');
+const { models, sampler, firstPrompt } = require('./getting-started/preparations');
+const { prompt, steps, cfgScale, seed, clipSkip } = require('./getting-started/prompt-options');
 
 const client = new Client({
     intents: [
@@ -39,9 +41,8 @@ client.on('interactionCreate', async interaction => {
             console.error(error);
             await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         }
-        return;
     }
-    if (interaction.isStringSelectMenu()) {
+    else if (interaction.isStringSelectMenu()) {
 
         switch (interaction.customId) {
             case 'dreams-model':
@@ -49,6 +50,30 @@ client.on('interactionCreate', async interaction => {
                 break;
             case 'dreams-sampler':
                 await dreamSamplerAction(interaction);
+                break;
+            case 'continue-to-models':
+                await models(interaction);
+                break;
+            case 'continue-to-sampler':
+                await sampler(interaction);
+                break;
+            case 'continue-to-first-prompt':
+                await firstPrompt(interaction);
+                break;
+            case 'getting-started-prompt':
+                await prompt(interaction);
+                break;
+            case 'getting-started-steps':
+                await steps(interaction);
+                break;
+            case 'getting-started-cfg-scale':
+                await cfgScale(interaction);
+                break;
+            case 'getting-started-seed':
+                await seed(interaction);
+                break;
+            case 'getting-started-clip-skip':
+                await clipSkip(interaction);
                 break;
             default:
                 break;
