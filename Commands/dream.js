@@ -14,23 +14,23 @@ module.exports = {
             option.setName('negatives')
                 .setDescription('The negative Prompt for the Image')
                 .setRequired(false))
-        .addStringOption(option =>
+        .addNumberOption(option =>
             option.setName('width')
                 .setDescription('Width of the Image. Deafult: 512 (min 64)')
                 .setRequired(false))
-        .addStringOption(option =>
+        .addNumberOption(option =>
             option.setName('height')
                 .setDescription('Height of the Image. Default: 512 (min 64)')
                 .setRequired(false))
-        .addStringOption(option =>
+        .addNumberOption(option =>
             option.setName('cfg scale')
                 .setDescription('cfg scale. Default: 7 (1 - 10)')
                 .setRequired(false))
-        .addStringOption(option =>
+        .addNumberOption(option =>
             option.setName('steps')
                 .setDescription('Steps. Default: 20 (1 - 50)')
                 .setRequired(false))
-        .addStringOption(option =>
+        .addNumberOption(option =>
             option.setName('CLIP skip')
                 .setDescription('CLIP Skip. Default: 1 (1 - 10)')
                 .setRequired(false)),
