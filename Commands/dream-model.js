@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { getModels } = require('../modules/generateImage');
-const { getCurrentModel, setCurrentModel } = require('../modules/SelectetModel');
+const { getCurrentModelForUser, setCurrentModelForUser } = require('../modules/SelectetModel');
 
 const slashCommand = new SlashCommandBuilder()
     .setName('dream-model')
@@ -72,7 +72,7 @@ async function dreamTypeList(interaction) {
 async function dreamTypeGetCurrent(interaction) {
     await interaction.editReply('Dream are coming soon!');
 
-    const currentModel = await getCurrentModel();
+    const currentModel = getCurrentModelForUser(interaction.user);
     await interaction.editReply(`The current model is: ${currentModel}`);
 
 }
@@ -94,7 +94,7 @@ async function dreamModelSet(interaction) {
         return;
     }
 
-    await setCurrentModel(foundModel);
+    await setCurrentModelForUser(foundModel, interaction.user);
     await interaction.editReply(`The current model is: ${model}`);
 }
 

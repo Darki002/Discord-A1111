@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { getSamplers } = require('../modules/generateImage');
-const { getCurrentSampler, setCurrentSampler } = require('../modules/SelectetModel');
+const { getCurrentSamplerForUser, setCurrentSamplerForUser } = require('../modules/SelectetModel');
 
 const slashCommand = new SlashCommandBuilder()
     .setName('dream-sampler')
@@ -72,9 +72,8 @@ async function dreamTypeList(interaction) {
 async function dreamTypeGetCurrent(interaction) {
     await interaction.editReply('Dream are coming soon!');
 
-    const currentSampler = await getCurrentSampler();
+    const currentSampler = getCurrentSamplerForUser(interaction.user);
     await interaction.editReply(`The current sampler is: ${currentSampler}`);
-
 }
 
 async function dreamSamplerSet(interaction) {
@@ -94,7 +93,7 @@ async function dreamSamplerSet(interaction) {
         return;
     }
 
-    await setCurrentSampler(foundSampler);
+    await setCurrentSamplerForUser(foundSampler, interaction.user);
     await interaction.editReply(`The current sampler is: ${sampler} `);
 }
 

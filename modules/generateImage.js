@@ -12,7 +12,7 @@ module.exports.getModels = async () => {
             reject(err);
         }
     });
-};
+}
 
 module.exports.getSamplers = async () => {
     return new Promise(async (resolve, reject) => {
@@ -25,7 +25,7 @@ module.exports.getSamplers = async () => {
             reject(err);
         }
     });
-};
+}
 
 module.exports.startImageGeneration = async (payload) => {
     return new Promise(async (resolve, reject) => {
@@ -50,7 +50,9 @@ function loadImage(response) {
     }
 }
 
-module.exports.createPayload = (sd_model_checkpoint, sampler, prompt, negatives, width, height, steps, cfg_scale) => {
+module.exports.createPayload = (
+    sd_model_checkpoint, sampler, prompt, negatives, width, height, steps, cfg_scale, clipSkip, seed
+) => {
     const payload = ({
         prompt: prompt,
         negative_prompt: negatives,
@@ -60,10 +62,12 @@ module.exports.createPayload = (sd_model_checkpoint, sampler, prompt, negatives,
         height: height ?? 512,
         sampler_index: sampler ?? "Euler",
         cfg_scale: cfg_scale ?? 7,
+        seed: seed ?? -1
     })
 
     const override_settings = {
-        "sd_model_checkpoint": sd_model_checkpoint
+        "sd_model_checkpoint": sd_model_checkpoint,
+        "CLIP_stop_at_last_layers": clipSkip ?? 1
     }
     payload['override_settings'] = override_settings
 

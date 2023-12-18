@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
 const { createPayload, startImageGeneration } = require('../modules/generateImage');
-const { getCurrentModel, getCurrentSampler } = require('../modules/SelectetModel');
+const { getCurrentModelForUser: getCurrentModel, getCurrentSamplerForUser: getCurrentSampler } = require('../modules/SelectetModel');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -33,12 +33,16 @@ module.exports = {
         .addNumberOption(option =>
             option.setName('CLIP skip')
                 .setDescription('CLIP Skip. Default: 1 (1 - 10)')
+                .setRequired(false))
+        .addNumberOption(option =>
+            option.setName('seed')
+                .setDescription('Seed. Default: Random')
                 .setRequired(false)),
 
     async execute(interaction) {
         await interaction.deferReply();
 
-        const currentModel = await getCurrentModel();
+        const currentModel = getCurrentModel(interaction.user);
         if (currentModel === undefined) {
             await interaction.editReply('You need to select a dream first!');
             return;
@@ -52,6 +56,7 @@ module.exports = {
         const cfgScale = interaction.options.getNumber('cfg scale');
         const steps = interaction.options.getNumber('steps');
         const clipSkip = interaction.options.getNumber('CLIP skip');
+        const seed = interaction.options.getNumber('seed');
 
         const userInputCheck = await checkUserInputs(interaction, prompt, width, height, cfgScale, steps, clipSkip);
         if (!userInputCheck) {
@@ -61,8 +66,9 @@ module.exports = {
         await interaction.editReply('Darki is dreaming...');
 
         try {
-            // Add ClipSkipt to Request
-            const payload = createPayload(currentModel, sampler, prompt, negatives, width, height, steps, cfgScale);
+            const payload = createPayload(
+                currentModel, sampler, prompt, negatives, width, height, steps, cfgScale, clipSkip, seed
+            );
             const imgBuffer = await startImageGeneration(payload);
 
             const imagheAttachment = new AttachmentBuilder(imgBuffer, { name: 'dream.png' });
