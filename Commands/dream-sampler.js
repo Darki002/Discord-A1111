@@ -73,7 +73,7 @@ async function dreamTypeGetCurrent(interaction) {
     await interaction.editReply('Dream are coming soon!');
 
     const currentSampler = await getCurrentSamplerForUser(interaction.user);
-    await interaction.editReply(`The current sampler is: ${currentSampler}`);
+    await interaction.editReply(`Your sampler is currently the \"${currentSampler}\" sampler`);
 }
 
 async function dreamSamplerSet(interaction) {
@@ -94,7 +94,7 @@ async function dreamSamplerSet(interaction) {
     }
 
     await setCurrentSamplerForUser(foundSampler, interaction.user);
-    await interaction.editReply(`The current sampler is: ${sampler} `);
+    await interaction.editReply(`Your sampler has changed to the \"${sampler}\" sampler`);
 }
 
 async function dreamSamplerAction(interaction) {

@@ -54,7 +54,7 @@ client.on('interactionCreate', async interaction => {
             }
 
             const modelName = model.split(/[ .]+/)[0];
-            await interaction.reply(`Selected dream: ${modelName}`);
+            await interaction.reply(`Your model has changed to the \"${modelName}\" model`);
         }
         if (interaction.customId === 'dreams-sampler') {
             const sampler = interaction.values[0];
@@ -66,7 +66,7 @@ client.on('interactionCreate', async interaction => {
                 return;
             }
 
-            await interaction.reply(`Selected sampler: ${sampler}`);
+            await interaction.reply(`Your sampler has changed to the \"${sampler}\" sampler`);
         }
     }
 });

@@ -73,7 +73,7 @@ async function dreamTypeGetCurrent(interaction) {
     await interaction.editReply('Dream are coming soon!');
 
     const currentModel = await getCurrentModelForUser(interaction.user);
-    await interaction.editReply(`The current model is: ${currentModel}`);
+    await interaction.editReply(`Your model is currently the \"${currentModel}\" model`);
 
 }
 
@@ -95,7 +95,7 @@ async function dreamModelSet(interaction) {
     }
 
     await setCurrentModelForUser(foundModel, interaction.user);
-    await interaction.editReply(`The current model is: ${model}`);
+    await interaction.editReply(`Your model has changed to \n${model}\"`);
 }
 
 async function dreamModelAction(interaction) {
