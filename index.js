@@ -42,7 +42,7 @@ client.on('interactionCreate', async interaction => {
             await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         }
     }
-    else if (interaction.isStringSelectMenu()) {
+    else if (interaction.isStringSelectMenu() || interaction.isButton()) {
 
         switch (interaction.customId) {
             case 'dreams-model':

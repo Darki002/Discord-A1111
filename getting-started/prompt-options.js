@@ -1,5 +1,5 @@
 module.exports.prompt = async (interaction) => {
-    const messgae = '## Prompts and Negative Prompts \n'
+    let messgae = '## Prompts and Negative Prompts \n'
     messgae += '### Prompts \n'
     messgae += 'Prompts are the text you want to use to generate an Image. You can describe your Image and what you can see in it. \n'
     messgae += '### Negative Prompts \n'
@@ -11,7 +11,7 @@ module.exports.prompt = async (interaction) => {
 }
 
 module.exports.steps = async (interaction) => {
-    const messgae = '## Steps \n'
+    let messgae = '## Steps \n'
     messgae += 'The Steps define the amount of steps the AI will take to generate your Image. Recommended is bewteen 20-30 Steps. \n'
     messgae += 'Usally the more steps you use the better the Image will be. However this will also increase the time it takes to generate the Image. \n'
     messgae += 'However this will vary from model to model. So you can try out different values or look them up on civitai. \n'
@@ -20,7 +20,7 @@ module.exports.steps = async (interaction) => {
 }
 
 module.exports.cfgScale = async (interaction) => {
-    const messgae = '## CFG Sclae \n'
+    let messgae = '## CFG Sclae \n'
     messgae += 'The CFG Scale basicly tells the AI how strict it should listen to your Pompt. \n'
     messgae += 'It depence on your model to wich value you want to set it. However most of the cases you will have a value between 5-7 \n'
 
@@ -28,7 +28,7 @@ module.exports.cfgScale = async (interaction) => {
 }
 
 module.exports.seed = async (interaction) => {
-    const messgae = '## Seed \n'
+    let messgae = '## Seed \n'
     messgae += 'The Seed is a random number that will be used to generate your Image. \n'
     messgae += 'To create a random seed you can use the value -1 (default value) \n'
     messgae += 'If you want to use a specific seed you can use any number. You can use this to recreate an Image.'
@@ -39,7 +39,7 @@ module.exports.seed = async (interaction) => {
 }
 
 module.exports.clipSkip = async (interaction) => {
-    const messgae = '## CLIP Skip \n'
+    let messgae = '## CLIP Skip \n'
     messgae += 'The CLIP Skip is a complex subject, so I wont explain it here.'
     messgae += 'I recomand you leaf it to the default value. If you choose to change it, set it to 1 or 2. \n'
     messgae += 'However it can improve your results when you use the correct value for your model. You can find this also on the civitai website \n'

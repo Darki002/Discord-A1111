@@ -8,7 +8,7 @@ const command = new SlashCommandBuilder()
 module.exports = {
     data: command,
     async execute(interaction) {
-        const messgae = `Hi, @${interaction.user.username}! I will try to guide you through this Image Generator so you can get your first Image created by an AI :)`;
+        const messgae = `Hi, ${interaction.user}! I will try to guide you through this Image Generator so you can get your first Image created by an AI :)`;
 
         const continiueButton = new ButtonBuilder()
             .setCustomId('continue-to-models')
