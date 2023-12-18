@@ -72,7 +72,7 @@ async function dreamTypeList(interaction) {
 async function dreamTypeGetCurrent(interaction) {
     await interaction.editReply('Dream are coming soon!');
 
-    const currentModel = getCurrentModelForUser(interaction.user);
+    const currentModel = await getCurrentModelForUser(interaction.user);
     await interaction.editReply(`The current model is: ${currentModel}`);
 
 }
