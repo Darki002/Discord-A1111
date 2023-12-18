@@ -2,6 +2,8 @@ const { SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
 const { createPayload, startImageGeneration } = require('../modules/generateImage');
 const { getCurrentModel } = require('../modules/SelectetModel');
 
+let isAlreadyRunning = false;
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('dream')
@@ -16,6 +18,14 @@ module.exports = {
                 .setRequired(false)),
 
     async execute(interaction) {
+
+        if (isAlreadyRunning) {
+            await interaction.reply('Darki is already dreaming! Please wait until he wakes up!');
+            return;
+        }
+
+        isAlreadyRunning = true;
+
         await interaction.deferReply();
 
         const currentModel = await getCurrentModel();
@@ -45,5 +55,7 @@ module.exports = {
             console.log(err);
             await interaction.editReply('Darki is having a nightmare!');
         }
+
+        isAlreadyRunning = false;
     }
 }
