@@ -19,7 +19,7 @@ const client = new Client({
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     try {
-        const commands = await registrateCommands(client);
+        await registrateCommands(client);
         console.log('Bot is ready!');
     }
     catch (error) {
@@ -42,33 +42,46 @@ client.on('interactionCreate', async interaction => {
         return;
     }
     if (interaction.isStringSelectMenu()) {
-        if (interaction.customId === 'dreams-model') {
-            const model = interaction.values[0];
-            const user = interaction.user;
-            try {
-                await setCurrentModel(model, user);
-            }
-            catch {
-                await interaction.reply('There was an error while selecting this dream!');
-                return;
-            }
 
-            const modelName = model.split(/[ .]+/)[0];
-            await interaction.reply(`Your model has changed to the \"${modelName}\" model`);
-        }
-        if (interaction.customId === 'dreams-sampler') {
-            const sampler = interaction.values[0];
-            try {
-                await setCurrentSampler(sampler, interaction.user);
-            }
-            catch {
-                await interaction.reply('There was an error while selecting this sampler!');
-                return;
-            }
-
-            await interaction.reply(`Your sampler has changed to the \"${sampler}\" sampler`);
+        switch (interaction.customId) {
+            case 'dreams-model':
+                await dreamsModel(interaction);
+                break;
+            case 'dreams-sampler':
+                await dreamSamplerAction(interaction);
+                break;
+            default:
+                break;
         }
     }
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
+async function dreamSamplerAction(interaction) {
+    const sampler = interaction.values[0];
+    try {
+        await setCurrentSampler(sampler, interaction.user);
+    }
+    catch {
+        await interaction.reply('There was an error while selecting this sampler!');
+        return;
+    }
+
+    await interaction.reply(`Your sampler has changed to the \"${sampler}\" sampler`);
+}
+
+async function dreamsModel(interaction) {
+    const model = interaction.values[0];
+    const user = interaction.user;
+    try {
+        await setCurrentModel(model, user);
+    }
+    catch {
+        await interaction.reply('There was an error while selecting this dream!');
+        return;
+    }
+
+    const modelName = model.split(/[ .]+/)[0];
+    await interaction.reply(`Your model has changed to the \"${modelName}\" model`);
+}
