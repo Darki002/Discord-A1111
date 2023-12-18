@@ -1,8 +1,8 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
-const { setCurrentModel } = require('./modules/SelectetModel');
+const { setCurrentModel, setCurrentSampler } = require('./modules/SelectetModel');
 const { registrateCommands } = require('./modules/registrateCommands');
-const {getCommandExecutions} = require('./comments');
+const { getCommandExecutions } = require('./comments');
 
 const client = new Client({
     intents: [
@@ -42,9 +42,9 @@ client.on('interactionCreate', async interaction => {
         return;
     }
     if (interaction.isStringSelectMenu()) {
-        if(interaction.customId === 'dreamstype'){
+        if (interaction.customId === 'dreams-model') {
             const model = interaction.values[0];
-            try{
+            try {
                 await setCurrentModel(model);
             }
             catch {
@@ -54,6 +54,18 @@ client.on('interactionCreate', async interaction => {
 
             const modelName = model.split(/[ .]+/)[0];
             await interaction.reply(`Selected dream: ${modelName}`);
+        }
+        if (interaction.customId === 'dreams-sampler') {
+            const sampler = interaction.values[0];
+            try {
+                await setCurrentSampler(sampler);
+            }
+            catch {
+                await interaction.reply('There was an error while selecting this sampler!');
+                return;
+            }
+
+            await interaction.reply(`Selected sampler: ${sampler}`);
         }
     }
 });

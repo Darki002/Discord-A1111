@@ -3,7 +3,7 @@ const { getModels } = require('../modules/generateImage');
 const { getCurrentModel, setCurrentModel } = require('../modules/SelectetModel');
 
 const slashCommand = new SlashCommandBuilder()
-    .setName('dreamtype')
+    .setName('dream-model')
     .setDescription('Select a SD Model for the Bot, that will be used to generate an Image')
     .addSubcommand(subcommand =>
         subcommand
@@ -20,7 +20,7 @@ const slashCommand = new SlashCommandBuilder()
     .addSubcommand(subcommand =>
         subcommand
             .setName('list')
-            .setDescription('List all available models'))
+            .setDescription('List all available models'));
 
 module.exports = {
     data: slashCommand,
@@ -32,10 +32,10 @@ module.exports = {
                 case 'set':
                     const model = interaction.options.getString('model');
                     if (model) {
-                        await dreamTypeSet(interaction);
+                        await dreamModelSet(interaction);
                     }
                     else {
-                        await dreamTypeAction(interaction);
+                        await dreamModelAction(interaction);
                     }
                     break;
                 case 'get':
@@ -60,7 +60,7 @@ async function dreamTypeList(interaction) {
     await interaction.editReply('Dreams are coming soon!');
 
     const models = await getModels();
-    let reply = '### Dream Types:';
+    let reply = '### Dream Models:';
 
     models.forEach(model => {
         reply += `\n - ${getModelName(model)}`;
@@ -77,7 +77,7 @@ async function dreamTypeGetCurrent(interaction) {
 
 }
 
-async function dreamTypeSet(interaction) {
+async function dreamModelSet(interaction) {
     await interaction.editReply('Dream is setting!');
 
     const model = interaction.options.getString('model');
@@ -87,23 +87,23 @@ async function dreamTypeSet(interaction) {
     }
 
     const models = await getModels();
-    const foundModel = models.filter(m => getModelName(m) === model)[0];
+    const foundModel = models.find(m => getModelName(m) === model);
 
     if (!foundModel) {
         await interaction.editReply('This model does not exist!');
         return;
     }
 
-    await setCurrentModel(model);
+    await setCurrentModel(foundModel);
     await interaction.editReply(`The current model is: ${model}`);
 }
 
-async function dreamTypeAction(interaction) {
+async function dreamModelAction(interaction) {
     await interaction.editReply('Dreams are coming soon!');
 
     const models = await getModels();
     const row = getModelActionRow(models);
-    await interaction.editReply({ content: 'What dream type do you want?!', components: [row] });
+    await interaction.editReply({ content: 'What dream model do you want?!', components: [row] });
 }
 
 function getModelActionRow(models) {
@@ -117,8 +117,8 @@ function getModelActionRow(models) {
     return new ActionRowBuilder()
         .addComponents(
             new StringSelectMenuBuilder()
-                .setCustomId('dreamstype')
-                .setPlaceholder('Select a dream type')
+                .setCustomId('dreams-model')
+                .setPlaceholder('Select a dream model')
                 .addOptions(modelsMap)
         );
 }

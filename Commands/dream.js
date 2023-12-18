@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
 const { createPayload, startImageGeneration } = require('../modules/generateImage');
-const { getCurrentModel } = require('../modules/SelectetModel');
+const { getCurrentModel, getCurrentSampler } = require('../modules/SelectetModel');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -43,6 +43,7 @@ module.exports = {
             await interaction.editReply('You need to select a dream first!');
             return;
         }
+        const sampler = await getCurrentSampler();
 
         const prompt = interaction.options.getString('prompt');
         const negatives = interaction.options.getString('negatives');
@@ -61,7 +62,7 @@ module.exports = {
 
         try {
             // Add ClipSkipt to Request
-            const payload = createPayload(currentModel, prompt, negatives, width, height, steps, cfgScale);
+            const payload = createPayload(currentModel, sampler, prompt, negatives, width, height, steps, cfgScale);
             const imgBuffer = await startImageGeneration(payload);
 
             const imagheAttachment = new AttachmentBuilder(imgBuffer, { name: 'dream.png' });

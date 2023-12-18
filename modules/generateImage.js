@@ -14,7 +14,20 @@ module.exports.getModels = async () => {
     });
 };
 
-module.exports.createPayload = (sd_model_checkpoint, prompt, negatives, width, height, steps, cfg_scale) => {
+module.exports.getSamplers = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const respons = await axios.get(url + '/sdapi/v1/samplers');
+            const samplers = respons.data.map(sampler => sampler.title)
+            resolve(samplers);
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
+    });
+};
+
+module.exports.createPayload = (sd_model_checkpoint, sampler, prompt, negatives, width, height, steps, cfg_scale) => {
     const payload = ({
         prompt: prompt,
         negative_prompt: negatives,
@@ -22,7 +35,7 @@ module.exports.createPayload = (sd_model_checkpoint, prompt, negatives, width, h
         batch_size: 1,
         width: width ?? 512,
         height: height ?? 512,
-        sampler_index: "Euler",
+        sampler_index: sampler ?? "Euler",
         cfg_scale: cfg_scale ?? 7,
     })
 
