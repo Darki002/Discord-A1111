@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const { setCurrentModel } = require('./modules/SelectetModel');
 const { registrateCommands } = require('./modules/registrateCommands');
 const {getCommandExecutions} = require('./comments');

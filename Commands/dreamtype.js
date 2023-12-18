@@ -110,7 +110,7 @@ async function dreamTypeAction(interaction) {
 function getModelActionRow(models) {
     const modelsMap = models.map(model => {
         return {
-            label: model,
+            label: model.split(/[ .]+/)[0],
             value: model
         }
     })
