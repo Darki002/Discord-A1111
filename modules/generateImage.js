@@ -27,26 +27,6 @@ module.exports.getSamplers = async () => {
     });
 };
 
-module.exports.createPayload = (sd_model_checkpoint, sampler, prompt, negatives, width, height, steps, cfg_scale) => {
-    const payload = ({
-        prompt: prompt,
-        negative_prompt: negatives,
-        steps: steps ?? 20,
-        batch_size: 1,
-        width: width ?? 512,
-        height: height ?? 512,
-        sampler_index: sampler ?? "Euler",
-        cfg_scale: cfg_scale ?? 7,
-    })
-
-    const override_settings = {
-        "sd_model_checkpoint": sd_model_checkpoint
-    }
-    payload['override_settings'] = override_settings
-
-    return payload;
-}
-
 module.exports.startImageGeneration = async (payload) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -68,4 +48,24 @@ function loadImage(response) {
         console.log(err);
         return null;
     }
+}
+
+module.exports.createPayload = (sd_model_checkpoint, sampler, prompt, negatives, width, height, steps, cfg_scale) => {
+    const payload = ({
+        prompt: prompt,
+        negative_prompt: negatives,
+        steps: steps ?? 20,
+        batch_size: 1,
+        width: width ?? 512,
+        height: height ?? 512,
+        sampler_index: sampler ?? "Euler",
+        cfg_scale: cfg_scale ?? 7,
+    })
+
+    const override_settings = {
+        "sd_model_checkpoint": sd_model_checkpoint
+    }
+    payload['override_settings'] = override_settings
+
+    return payload;
 }
