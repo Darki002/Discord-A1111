@@ -27,7 +27,7 @@ To run this Bot on your own you have to do the following steps
 5. Clone this repository
 6. Set Up the Token
     1. Create a file `.env` where the `index.js` file is.
-    2. `DISCORD_TOKEN="<token>"` replace the <token> with your Discord Bot Token.
+    2. Add the line `DISCORD_TOKEN="<token>"` and replace the <token> with your Discord Bot Token.
 7. Run the bot with `node index.js`.
 
 ## Credits
