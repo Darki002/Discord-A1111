@@ -58,14 +58,17 @@ module.exports.createPayload = (
     const parsedClipSkip = parseInt(clipSkip);
     const parsedSeed = parseInt(seed);
 
+    const samplingMethode = sampler ? sampler.toString() : 'Euler';
+
     const payload = ({
-        prompt: prompt.toString(),
-        negative_prompt: negatives.toString(),
+        prompt: getString(prompt),
+        negative_prompt: getString(negatives),
         steps: isNaN(parsedSteps) ? 20 : parsedSteps,
         batch_size: 1,
         width: isNaN(parsedWidth) ? 512 : parsedWidth,
         height: isNaN(parsedHeight) ? 512 : parsedHeight,
-        sampler_index: sampler ? sampler.toString() : 'Eular',
+        sampler_name: samplingMethode,
+        sampler_index: samplingMethode,
         cfg_scale: isNaN(parsedCfgScale) ? 7 : parsedCfgScale,
         seed: isNaN(parsedSeed) ? -1 : parsedSeed
     })
@@ -77,4 +80,8 @@ module.exports.createPayload = (
     payload['override_settings'] = override_settings
 
     return payload;
+}
+
+function getString(input) {
+    return input ? input.toString() : '';
 }

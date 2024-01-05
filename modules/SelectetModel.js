@@ -71,7 +71,7 @@ async function setUserSettings(user, model, sampler) {
                 existingSettings.Sampler = sampler ?? existingSettings.Sampler;
                 existingSettings.Model = model ?? existingSettings.Model;
             } else {
-                userSettings.push({ UserId: user.id, Model: model, Sampler: sampler });
+                userSettings.push({ UserId: user.id, UserName: user.username, Model: model, Sampler: sampler });
             }
             fs.writeFile(filePath, JSON.stringify(userSettings), (err) => {
                 if (err) reject(err);

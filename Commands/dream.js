@@ -43,52 +43,59 @@ module.exports = {
 
     async execute(interaction) {
 
-        if (isAlreadyRunning) {
-            await interaction.reply('Darki is already dreaming! Please wait until he wakes up!');
-            return;
-        }
-
-        isAlreadyRunning = true;
-
-        await interaction.deferReply();
-
-        const currentModel = getCurrentModel(interaction.user);
-        if (currentModel === undefined) {
-            await interaction.editReply('You need to select a dream first!');
-            return;
-        }
-        const sampler = await getCurrentSampler(interaction.user);
-
-        const prompt = interaction.options.getString('prompt');
-        const negatives = interaction.options.getString('negatives');
-        const width = interaction.options.getNumber('width');
-        const height = interaction.options.getNumber('height');
-        const cfgScale = interaction.options.getNumber('cfg_scale');
-        const steps = interaction.options.getNumber('steps');
-        const clipSkip = interaction.options.getNumber('clip_skip');
-        const seed = interaction.options.getNumber('seed');
-
-        const userInputCheck = await checkUserInputs(interaction, prompt, width, height, cfgScale, steps, clipSkip);
-        if (!userInputCheck) {
-            return;
-        }
-
-        await interaction.editReply('Darki is dreaming...');
-
         try {
-            const payload = createPayload(
-                currentModel, sampler, prompt, negatives, width, height, steps, cfgScale, clipSkip, seed
-            );
-            const imgBuffer = await startImageGeneration(payload);
+            if (isAlreadyRunning) {
+                await interaction.reply('Darki is already dreaming! Please wait until he wakes up!');
+                return;
+            }
 
-            const imagheAttachment = new AttachmentBuilder(imgBuffer, { name: 'dream.png' });
-            await interaction.editReply({ content: 'Darki has had a dream:', files: [imagheAttachment] });
+            isAlreadyRunning = true;
+
+            await interaction.deferReply();
+
+            const currentModel = getCurrentModel(interaction.user);
+            if (currentModel === undefined) {
+                await interaction.editReply('You need to select a dream first!');
+                return;
+            }
+            const sampler = await getCurrentSampler(interaction.user);
+
+            const prompt = interaction.options.getString('prompt');
+            const negatives = interaction.options.getString('negatives');
+            const width = interaction.options.getNumber('width');
+            const height = interaction.options.getNumber('height');
+            const cfgScale = interaction.options.getNumber('cfg_scale');
+            const steps = interaction.options.getNumber('steps');
+            const clipSkip = interaction.options.getNumber('clip_skip');
+            const seed = interaction.options.getNumber('seed');
+
+            const userInputCheck = await checkUserInputs(interaction, prompt, width, height, cfgScale, steps, clipSkip);
+            if (!userInputCheck) {
+                return;
+            }
+
+            await interaction.editReply('Darki is dreaming...');
+
+            try {
+                const payload = createPayload(
+                    currentModel, sampler, prompt, negatives, width, height, steps, cfgScale, clipSkip, seed
+                );
+                const imgBuffer = await startImageGeneration(payload);
+
+                const imagheAttachment = new AttachmentBuilder(imgBuffer, { name: 'dream.png' });
+                await interaction.editReply({ content: 'Darki has had a dream:', files: [imagheAttachment] });
+            }
+            catch (err) {
+                await interaction.editReply('Darki is having a nightmare!');
+                console.log(err);
+            }
+
+            isAlreadyRunning = false;
         }
         catch (err) {
-            await interaction.editReply('Darki is having a nightmare!');
+            console.log(err);
+            interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
         }
-
-        isAlreadyRunning = false;
     }
 }
 
