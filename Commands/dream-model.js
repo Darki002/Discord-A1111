@@ -112,7 +112,8 @@ async function dreamModelAction(interaction) {
     await interaction.editReply('Dreams are coming soon!');
 
     const models = await getModels();
-    const row = getModelActionRow(models);
+    const firstModels = models.slice(0, 25);
+    const row = getModelActionRow(firstModels);
     await interaction.editReply({ content: 'What dream model do you want?!', components: [row] });
 }
 
