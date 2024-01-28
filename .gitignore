@@ -132,3 +132,4 @@ dist
 # UserSettings File
 
 /modules/db/UserSettings.json
+modules/db/UserSettings.json
