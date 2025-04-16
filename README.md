@@ -8,8 +8,6 @@ It can generate AI Images with stable diffusion right inside of discord, like yo
 
 You can use whatever SD or SDXL model you want, just install it in A1111 and it will show up for the Discord Bot. 
 
-**Note:** keep in mind that this Bot **can** use uncensored models! So be cearful in wich Channels you generate your Images xD
-
 ## Getting Started
 
 The Bot has it's own Getting Started Tutorial build in. You can just use the `/getting-started` command. Have fun :)
